@@ -1,13 +1,13 @@
-<!-- Paulina Lach, słowa kluczowe, synonimy, redukcja symboliczna, podział -->
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <aiml version="1.0.1" xmlns="http://alicebot.org/2001/AIML-1.0.1"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://alicebot.org/2001/AIML-1.0.1
 http://aitools.org/aiml/schema/AIML.xsd">
+<!-- Paulina Lach, słowa kluczowe, synonimy, redukcja symboliczna, podział, kontekst <topic>, wyrazenia warunkowe -->
 
 <category>
   <pattern>nazwa</pattern>
-  <template>Nasza firma to 'Sth'</template>
+  <template>Nasza firma to Google</template>
 </category>
 <category>
   <pattern>_ nazwa</pattern>
@@ -35,33 +35,33 @@ http://aitools.org/aiml/schema/AIML.xsd">
 </category>
 
 <category>
-<pattern>Kiedy powstala</pattern>
-<template>Firma zostala zalozona w roku 2001</template>
+<pattern>Kiedy powstala *</pattern>
+<template>Firma zostala zalozona w roku 1998</template>
 </category>
 <category>
-<pattern>W ktorym roku * </pattern>
+<pattern>W ktorym roku *</pattern>
 <template><srai>Kiedy <star/></srai></template>
 </category>
 
 <category>
-  <pattern>firma produkuje</pattern>
-  <template>Produkujemy </template>
+  <pattern>firma tworzy</pattern>
+  <template>Tworzymy </template>
 </category>
 <category>
-  <pattern>jest produktem firmy</pattern>
-  <template>Naszym produktem sa </template>
+  <pattern>jest tworzone przez firme</pattern>
+  <template>Firma tworzy </template>
 </category>
 <category>
   <pattern>Co *</pattern>
-  <template><srai><star/></srai>komputery</template>
+  <template><srai><star/></srai>m.in. wyszukiwarke</template>
 </category>
 
 <category>
-  <pattern>Wasza siedziba jest w Krakowie</pattern>
+  <pattern>siedziba jest w USA</pattern>
   <template>tak</template>
 </category>
 <category>
-  <pattern>Wasza siedziba jest w Warszawie</pattern>
+  <pattern>siedziba jest w Polsce</pattern>
   <template>nie</template>
 </category>
 <category>
@@ -69,5 +69,108 @@ http://aitools.org/aiml/schema/AIML.xsd">
   <template><srai><star/></srai></template>
 </category>
 
+<topic name="REKRUT">
+  <category>
+    <pattern>stanowiska</pattern>
+    <template><think><set name="topic">STANOW</set></think>W porzadku, porozmawiajmy o stanowiskach.</template>
+  </category>
+  <category>
+    <pattern>dlugosc</pattern>
+    <template><think><set name="topic">DLUGO</set></think>W porzadku, porozmawiajmy o dlugosci dostepnosci stanowisk.</template>
+  </category>
+  <category>
+    <pattern>Zadnej z nich</pattern>
+    <template><think><set name="topic">*</set></think>W porzadku, nie rozmawiajmy o rekrutacji.</template>
+  </category>
+  <category>
+    <pattern>*</pattern>
+    <template>Ale o czym dokladnie chcesz porozmawiac</template>
+  </category>
+</topic>
+<category>
+  <pattern>Porozmawiajmy o rekrutacji</pattern>
+  <template><think><set name="topic">REKRUT</set></think>
+  O czym dokladnie? stanowiska/dlugosc?
+  </template>
+</category>
+
+<topic name="STANOW">
+  <category>
+    <pattern>Ile stanowisk</pattern>
+    <template>10</template>
+  </category>
+  <category>
+    <pattern>Jakie stanowiska</pattern>
+    <template>8 programistow i 2 grafikow</template>
+  </category>
+  <category>
+    <pattern>*</pattern>
+    <template>Nie rozumiem. Chcesz przestac rozmawiac o stanowiskach
+    <think><set name="topic">IF</set></think>
+    </template>
+  </category>
+</topic>
+
+<topic name="DLUGO">
+  <category>
+    <pattern>Jak dlugo beda dostepne</pattern>
+    <template>Potrzebujemy ludzi, wiec prawdopodobnie po zrekrutowaniu tej partii, bedzie kolejna</template>
+  </category>
+  <category>
+    <pattern>Jak jest z kazdym stanowiskiem</pattern>
+    <template>Potrzebujemy najwiecej grafikow, takze dla nich bedzie najdluzszy, bo jest ich malo</template>
+  </category>
+  <category>
+    <pattern>*</pattern>
+    <template>Nie rozumiem. Chcesz przestac rozmawiac o dlugosci dostepnosci rekrutacji
+      <think><set name="topic">IF2</set></think>
+    </template>
+  </category>
+</topic>
+
+<topic name="IF">
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <think><set name="var"><uppercase><star /></uppercase></set></think>
+      <condition>
+        <li name="var" value="TAK">
+          W porzadku.
+          <think><set name="topic">*</set></think>
+        </li>
+        <li name="var" value="NIE">
+          To co chcesz wiedziec
+          <think><set name="topic">STANOW</set></think>
+        </li>
+        <li>Tak czy nie </li>
+      </condition>
+    </template>
+  </category>
+</topic>
+
+<topic name="IF2">
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <think><set name="var"><uppercase><star /></uppercase></set></think>
+      <condition>
+        <li name="var" value="TAK">
+          W porzadku.
+          <think><set name="topic">*</set></think>
+        </li>
+        <li name="var" value="NIE">
+          To co chcesz wiedziec
+          <think><set name="topic">DLUGO</set></think>
+        </li>
+        <li>Tak czy nie </li>
+      </condition>
+    </template>
+  </category>
+</topic>
+
+<category>
+  <pattern>*</pattern>
+  <template>Nie znam odpowiedzi na to pytanie :(</template>
+</category>
 
 </aiml>
